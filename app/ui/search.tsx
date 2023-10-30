@@ -11,10 +11,10 @@ export default function TableSearch({ placeholder }: { placeholder: string }) {
   // function handleSearch(term: string) {
   //Simply wrapping the handleSearch function with useDebouncedCallback and passing a 300ms timer delay
   const handleSearch = useDebouncedCallback((term: string) => {
-    // console.log(term);
-    console.log(`Searching... ${term}`);
-
+    // console.log(`Searching... ${term}`);
     const params = new URLSearchParams(searchParams);
+    params.set("page", "1"); //reset page to 1 when searching
+
     if (term) {
       params.set("query", term);
     } else {
