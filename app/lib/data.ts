@@ -28,7 +28,12 @@ export async function fetchRevenue() {
 // THIS FETCHES THE 'LATEST 5 INVOICES" FROM THE DATABASE, this is to improve our performance otherwise if this was a large database, it would increase the amount of data and javascript code to sort through the database, so we opted to only grab the latest 5 invoices
 export async function fetchLatestInvoices() {
   noStore();
+
   try {
+    // COMMENT THESE TWO LINES AFTER
+    console.log("Fetching revenue data...");
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+
     const data = await sql<LatestInvoiceRaw>`
       SELECT invoices.amount, customers.name, customers.image_url, customers.email, invoices.id
       FROM invoices
