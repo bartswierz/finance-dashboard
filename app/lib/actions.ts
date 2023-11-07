@@ -42,3 +42,25 @@ export async function createInvoice(formData: FormData) {
   revalidatePath("/dashboard/invoices"); //clears cache and then initaites a NEW SERVER REQUEST, this updates the data after it has been created and then can be displayed. Without this it would not show up right away
   redirect("/dashboard/invoices"); //REDIRECT USER TO THE INVOICE PAGE AFTER CREATING AN INVOICE IN OUR DATABASE
 }
+
+// Use Zod to update the expected types
+const UpdateInvoice = InvoiceSchema.omit({ date: true });
+
+export async function updateInvoice(id: string, formData: FormData) {
+  const { customerId, amount, status } = UpdateInvoice.parse({
+    customerId: formData.get("customerId"),
+    amount: formData.get("amount"),
+    status: formData.get("status"),
+  });
+
+  const amountInCents = amount * 100;
+
+  await sql`
+    UPDATE invoices
+    SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
+    WHERE id = ${id}
+  `;
+
+  revalidatePath("/dashboard/invoices");
+  redirect("/dashboard/invoices");
+}
