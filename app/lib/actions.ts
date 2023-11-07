@@ -2,6 +2,8 @@
 
 import { z } from "zod";
 import { sql } from "@vercel/postgres";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 const InvoiceSchema = z.object({
   id: z.string(),
@@ -37,4 +39,6 @@ export async function createInvoice(formData: FormData) {
   // Test it out:
   // console.log(rawFormData);
   // console.log(typeof rawFormData.amount);
+  revalidatePath("/dashboard/invoices"); //clears cache and then initaites a NEW SERVER REQUEST, this updates the data after it has been created and then can be displayed. Without this it would not show up right away
+  redirect("/dashboard/invoices"); //REDIRECT USER TO THE INVOICE PAGE AFTER CREATING AN INVOICE IN OUR DATABASE
 }
