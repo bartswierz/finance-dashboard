@@ -7,7 +7,7 @@ import { Button } from "@/app/ui/button";
 import { updateInvoice } from "@/app/lib/actions";
 
 export default function EditInvoiceForm({ invoice, customers }: { invoice: InvoiceForm; customers: CustomerField[] }) {
-  const updateInvoiceWithId = updateInvoice.bind(null, invoice.id);
+  const updateInvoiceWithId = updateInvoice.bind(null, invoice.id); //Bind - This will ensure that any values passed to the Server Action are encoded. This is a security measure to prevent XSS attacks.
 
   return (
     <form action={updateInvoiceWithId}>
