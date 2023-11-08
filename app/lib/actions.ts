@@ -32,10 +32,16 @@ export async function createInvoice(formData: FormData) {
   //ALTERNATIVE:
   //const rawFormData = Object.fromEntries(formData.entries())
 
-  await sql`
+  try {
+    await sql`
     INSERT INTO invoices (customer_id, amount, status, date)
     VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
   `;
+  } catch (error) {
+    return {
+      message: "Database Error: Failed to Create Invoice.",
+    };
+  }
   // Test it out:
   // console.log(rawFormData);
   // console.log(typeof rawFormData.amount);
@@ -55,17 +61,30 @@ export async function updateInvoice(id: string, formData: FormData) {
 
   const amountInCents = amount * 100;
 
-  await sql`
+  try {
+    await sql`
     UPDATE invoices
     SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
     WHERE id = ${id}
   `;
+  } catch (error) {
+    return { message: "Database Error: Failed to Update Invoice." };
+  }
 
+  // We are placing these AFTER the try/catch to ONLY BE CALLED IF THE UPDATE IS SUCCESSFUL
   revalidatePath("/dashboard/invoices");
   redirect("/dashboard/invoices");
 }
 
 export async function deleteInvoice(id: string) {
-  await sql`DELETE FROM invoices WHERE id = ${id}`;
-  revalidatePath("/dashboard/invoices"); //Calling revalidatePath will trigger a new server request and re-render the table.
+  throw new Error("Failed to Delete Invoice"); //for testing purposes, this will automatically throw an error when we try to delete an invoice
+
+  try {
+    await sql`DELETE FROM invoices WHERE id = ${id}`;
+    revalidatePath("/dashboard/invoices"); //Calling revalidatePath will trigger a new server request and re-render the table.
+  } catch (error) {
+    return { message: "Database Error: Failed to Delete Invoice." };
+  }
 }
+
+//https://nextjs.org/learn/dashboard-app/error-handling
