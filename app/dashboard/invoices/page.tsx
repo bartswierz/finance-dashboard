@@ -7,6 +7,14 @@ import { InvoicesTableSkeleton } from "@/app/ui/skeletons";
 import { Suspense } from "react";
 import { fetchInvoicesPages } from "@/app/lib/data";
 
+import { Metadata } from "next";
+
+// Updates project Title to "Invoices | Acme Dashboard" when user switches to the invoices page
+export const metadata: Metadata = {
+  // title: "Invoices | Acme Dashboard",
+  title: "Invoices",
+};
+
 // PASSED FROM app/ui/search.tsx
 export default async function Page({
   searchParams,
